@@ -1,0 +1,15 @@
+{
+  "name": "mean-scraper",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo 'MEAN scraper app'",
+    "start": "node app"
+  },
+  "author": "Hitesh Tare",
+  "license": "ISC",
+  "dependencies": {
+    "puppeteer": "^1.7.0"
+  }
+}
