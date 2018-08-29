@@ -1,4 +1,5 @@
 const puppeteer = require('puppeteer');
+const constants = require('./util/constant');
 const Candidate = require('./models/candidateModel');
 
 function scrapeNow() {
@@ -20,27 +21,26 @@ function scrapeNow() {
 
 
     //Navigate to our site
-    await page.goto('https://panchayatelection.maharashtra.gov.in/MasterSearch.aspx');
-    //Select 'MUNIC'L CORPORATION' as LocalBody
-    await page.select('#ContentPlaceHolder1_SearchControl1_DDLLocalBody', '5');
+    await page.goto(constants.WEB_SITE_URI);
+    //Select 'MUNICIPAL CORPORATION' as LocalBody
+    await page.select(constants.LOCAL_BODY_DRPDWN, '5');
     await page.waitFor(1000);
-    //await page.click('#ContentPlaceHolder1_SearchControl1_DDLLocalBody > button');
     //Select 'Konkan' as Division
-    await page.select('#ContentPlaceHolder1_SearchControl1_DDLDivision', '6');
+    await page.select(constants.DIVISION_DRPDWN, '6');
     await page.waitFor(1000)
     //Select 'Mumbai City' as District
-    await page.select('#ContentPlaceHolder1_SearchControl1_DDLDistrict', '519');
+    await page.select(constants.DISTRICT_DRPDWN, '519');
     await page.waitFor(1000);
     //Select 'BruhanMumbai Mahanagar Palika | MP' as Municipal Corporation Name
-    await page.select('#ContentPlaceHolder1_SearchControl1_DDLMunicipalcorporation', '429');
+    await page.select(constants.MUNICIPAL_CORP_DRPDWN, '429');
     await page.waitFor(1000);
     //Select 'BruhanMumbai Mahanagar Palika' as Election Programe Name
-    await page.select('#ContentPlaceHolder1_SearchControl1_ddlEP', '20');
+    await page.select(constants.ELECTION_PROG_DRPDWN, '20');
     await page.waitFor(1000);
     //Select '1' as Ward
-    await page.select('#ContentPlaceHolder1_SearchControl1_DDLWARDGP', '3542');
+    await page.select(constants.WARD_DRPDWN, '3542');
     //Finally click on Search button 
-    await page.click('#ContentPlaceHolder1_btnSearch');
+    await page.click(constants.SEARCH_BTN);
     //Wait for results to load in datatable
     await page.waitFor(3000);
 
@@ -50,10 +50,10 @@ function scrapeNow() {
       let candidateListSelectorID = document.getElementById(sel);
       let candidateSelectorTagName = candidateListSelectorID.getElementsByTagName('tr');
       return candidateSelectorTagName.length;
-    }, 'ContentPlaceHolder1_GVData');
+    }, constants.CANDIDATE_DATA_CONTAINER);
 
     for (let i = 2; i <= candidateListLength; i++) {
-      let candidateSelector = `#ContentPlaceHolder1_GVData  > tbody > tr:nth-child(${i})`;
+      let candidateSelector = constants.CANDIDATE_DATA_SELECTOR.replace("INDEX", i);
 
       let candidateListing = await page.evaluate((sel) => {
         console.log(document.querySelector(sel));
