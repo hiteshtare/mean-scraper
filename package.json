@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "test": "echo 'MEAN scraper app'",
-    "start": "node app"
+    "start": "node app",
+    "deploy": "git push heroku master"
   },
   "author": "Hitesh Tare",
   "license": "ISC",
