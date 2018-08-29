@@ -10,7 +10,8 @@ function scrapeNow() {
     const browser = await puppeteer.launch({
       headless: true,
       ignoreHTTPSErrors: true,
-      headless: false
+      headless: false,
+      args: ['--no-sandbox']
     });
 
     const page = await browser.newPage();
