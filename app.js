@@ -14,7 +14,7 @@ app.get('/', function (req, res) {
 });
 
 app.listen(port, "0.0.0.0", function () {
-  console.log("Listening on Port 3000");
+  console.log("Listening on Port : 3000");
 });
 
 //Connect to Database
