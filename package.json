@@ -1,10 +1,10 @@
 {
-  "name": "mean-scraper",
+  "name": "node-scraper",
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "echo 'MEAN scraper app'",
+    "test": "echo 'Node scraper app'",
     "start": "node app",
     "deploy": "git push heroku master"
   },
