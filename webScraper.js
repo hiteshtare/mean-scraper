@@ -8,6 +8,9 @@ function scrapeNow() {
   async function runScraper() {
     //Launch the headless browser
     const browser = await puppeteer.launch({
+      headless: true,
+      ignoreHTTPSErrors: true,
+      headless: false,
       args: ['--no-sandbox', '--disable-setuid-sandbox']
     });
 
