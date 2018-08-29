@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
 const config = require('./config');
 const webScraperModule = require('./webScraper');
+const express = require('express');
+
+var app = express();
 
 var port = process.env.PORT || 3000;
 app.listen(port, "0.0.0.0", function () {
