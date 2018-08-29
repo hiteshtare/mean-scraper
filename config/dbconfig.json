@@ -1,4 +1,5 @@
 {
   "username": "trupti",
-  "password": "admin123"
+  "password": "admin123",
+  "scrapeEnable": "false"
 }

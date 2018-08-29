@@ -25,10 +25,14 @@ mongoose.connect(config.getDbConnStr(), {
 mongoose.connection.on('connected', () => {
   console.log(`Connected to database : ${config.getDbConnStr()}`);
 
+
+  //Check for scrapeEnable flag
+  console.log(`Scraping Enable : ${config.getScrapeEnableBool()}`);
+  if (config.getScrapeEnableBool()) {
+    webScraperModule();
+  }
 });
 //On connection error
 mongoose.connection.on('error', (err) => {
   console.log(`#Error occurred while making Database Connection : ${err}`);
 });
-
-webScraperModule();
