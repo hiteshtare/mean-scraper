@@ -71,6 +71,14 @@ function scrapeNow() {
   runScraper().then((values) => {
     let arrCandidates = values;
 
+    Candidate.deleteAllCandidates(function (err, callback) {
+      if (err) {
+        console.log(`Unable to delete All Candidate!`);
+      } else {
+        console.log(`All Candidates deleted successfully.`);
+      }
+    });
+
     arrCandidates.forEach((candidate) => {
       let myCandidate = candidate.split('\t');
 

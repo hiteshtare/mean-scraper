@@ -20,3 +20,7 @@ const Candidate = module.exports = mongoose.model('Candidate', candidateSchema);
 module.exports.addCandidate = function (newCandidate, callback) {
   newCandidate.save(callback);
 }
+
+module.exports.deleteAllCandidates = function (callback) {
+  Candidate.remove({}, callback);
+}
