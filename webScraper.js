@@ -8,7 +8,7 @@ function scrapeNow() {
   async function runScraper() {
     //Launch the headless Chrome browser with specified options
 
-    console.log(`Launching browser`);
+    console.log(`Launching browser.. B-)`);
     const browser = await puppeteer.launch({
       headless: true,
       ignoreHTTPSErrors: true,
@@ -84,6 +84,7 @@ function scrapeNow() {
   runScraper().then((values) => {
     //Assign array values having scraped data
     let arrCandidates = values;
+    var candidatesAdded = 0;
 
     //Remove all candidates added previously from mongo
     Candidate.deleteAllCandidates(function (err, callback) {
@@ -115,7 +116,12 @@ function scrapeNow() {
         if (err) {
           console.log(`Unable to add Candidate!`);
         } else {
+          candidatesAdded++;
           console.log(`Candidate added successfully.`);
+
+          if (candidatesAdded === arrCandidates.length) {
+            console.log(`>> Finished adding all Candidates successfully :)`);
+          }
         }
       });
 
