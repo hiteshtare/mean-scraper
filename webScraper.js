@@ -21,6 +21,12 @@ function scrapeNow() {
     //Open new page tab in the browser
     const page = await browser.newPage();
 
+    //Check for unhandledRejection error
+    process.on("unhandledRejection", (reason, p) => {
+      console.error("Unhandled Rejection at: Promise", p, "reason:", reason);
+      browser.close();
+    });
+
     //Navigate to our site
     await page.goto(constants.WEB_SITE_URI);
     //Select 'MUNICIPAL CORPORATION' as LocalBody
@@ -67,12 +73,6 @@ function scrapeNow() {
       //Push innerText 'candidateListing' into arrayCandidateResults
       arrayCandidateResults.push(candidateListing);
     }
-
-    //Check for unhandledRejection error
-    process.on("unhandledRejection", (reason, p) => {
-      console.error("Unhandled Rejection at: Promise", p, "reason:", reason);
-      browser.close();
-    });
 
     //Close the browser
     browser.close();
