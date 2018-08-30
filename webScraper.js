@@ -6,7 +6,9 @@ function scrapeNow() {
 
   //Scraper function
   async function runScraper() {
-    //Launch the headless browser
+    //Launch the headless Chrome browser with specified options
+
+    console.log(`Launching browser`);
     const browser = await puppeteer.launch({
       headless: true,
       ignoreHTTPSErrors: true,
@@ -14,12 +16,10 @@ function scrapeNow() {
       args: ['--no-sandbox', '--disable-setuid-sandbox']
     });
 
-    const page = await browser.newPage();
-    process.on("unhandledRejection", (reason, p) => {
-      console.error("Unhandled Rejection at: Promise", p, "reason:", reason);
-      browser.close();
-    });
+    console.log(`Scraping! has started..`);
 
+    //Open new page tab in the browser
+    const page = await browser.newPage();
 
     //Navigate to our site
     await page.goto(constants.WEB_SITE_URI);
@@ -45,65 +45,77 @@ function scrapeNow() {
     //Wait for results to load in datatable
     await page.waitFor(3000);
 
+    //Declare empty array 'arrayCandidateResults'
     arrayCandidateResults = [];
 
+    //Calculate number of rows in the data container
     let candidateListLength = await page.evaluate((sel) => {
       let candidateListSelectorID = document.getElementById(sel);
       let candidateSelectorTagName = candidateListSelectorID.getElementsByTagName('tr');
       return candidateSelectorTagName.length;
     }, constants.CANDIDATE_DATA_CONTAINER);
 
+    //Iterate over those rows excluding 1st 2 rows as it contains header info
     for (let i = 2; i <= candidateListLength; i++) {
       let candidateSelector = constants.CANDIDATE_DATA_SELECTOR.replace("INDEX", i);
 
       let candidateListing = await page.evaluate((sel) => {
-        console.log(document.querySelector(sel));
+        //To fetch innerText inside a row
         return document.querySelector(sel).innerText;
       }, candidateSelector);
 
+      //Push innerText 'candidateListing' into arrayCandidateResults
       arrayCandidateResults.push(candidateListing);
     }
 
+    //Check for unhandledRejection error
+    process.on("unhandledRejection", (reason, p) => {
+      console.error("Unhandled Rejection at: Promise", p, "reason:", reason);
+      browser.close();
+    });
+
+    //Close the browser
     browser.close();
+
     return arrayCandidateResults;
   }
 
   //After successfull scraping
   runScraper().then((values) => {
+    //Assign array values having scraped data
     let arrCandidates = values;
 
+    //Remove all candidates added previously from mongo
     Candidate.deleteAllCandidates(function (err, callback) {
+      //If error occurs while deleting
       if (err) {
-        console.log(`Unable to delete All Candidate!`);
+        console.log(`Unable to delete All Candidates!`);
       } else {
         console.log(`All Candidates deleted successfully.`);
       }
     });
 
+    //Iterate over arrCandidates
     arrCandidates.forEach((candidate) => {
+      //Split string 'candidate' using '\t'
       let myCandidate = candidate.split('\t');
 
+      //Create newCandidate Model
       let newCandidate = new Candidate({
         sr_no: myCandidate[0],
         registration_no: myCandidate[1],
         full_name: myCandidate[2]
       })
 
+      //Add a candidate to mongo
       Candidate.addCandidate(newCandidate, function (err, callback) {
+        //Log string 'myCandidate'
+        console.log(myCandidate);
+        //If error occurs while adding
         if (err) {
           console.log(`Unable to add Candidate!`);
-
-          // res.json({
-          //   'success': false,
-          //   'message': 'Unable to register User!'
-          // })
         } else {
           console.log(`Candidate added successfully.`);
-
-          // res.json({
-          //   'success': true,
-          //   'message': 'User registered successfully.'
-          // })
         }
       });
 
@@ -112,4 +124,5 @@ function scrapeNow() {
   });
 }
 
+//Export the scrapeNow function as a module
 module.exports = scrapeNow;
